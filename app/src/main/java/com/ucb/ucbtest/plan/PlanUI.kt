@@ -1,5 +1,8 @@
 package com.ucb.ucbtest.plan
 
+import android.content.Intent
+import android.net.Uri
+import android.widget.Toast
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.SizeTransform
@@ -48,6 +51,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -73,10 +77,12 @@ fun PlanUI(
     navController: NavHostController,
     onSuccess: () -> Unit
 ) {
+    val context = LocalContext.current
     LaunchedEffect(Unit) {
         planViewModel.fetchPlans()
+        planViewModel.getNumber()
     }
-
+    val number by planViewModel.phoneNumber.collectAsState()
     val uiState by planViewModel.flow.collectAsState()
     var currentIndex by remember { mutableStateOf(0) }
 
@@ -278,7 +284,19 @@ fun PlanUI(
 
                 // Botón flotante WhatsApp
                 FloatingActionButton(
-                    onClick = { /* Acción WhatsApp */ },
+                    onClick = {
+                        val message = "Hola, UCB mobile, preciso su ayuda"
+                        val numberWithCountryCode = number
+                        try {
+                            val intent = Intent(Intent.ACTION_VIEW).apply {
+                                setPackage("com.whatsapp")
+                                data = Uri.parse("https://api.whatsapp.com/send?phone=$numberWithCountryCode&text=${Uri.encode(message)}")
+                            }
+                            context.startActivity(intent)
+                        } catch (e: Exception) {
+                            Toast.makeText(context, "No se pudo abrir WhatsApp", Toast.LENGTH_SHORT).show()
+                        }
+                    },
                     containerColor = Color(0xFF25D366),
                     modifier = Modifier
                         .align(Alignment.BottomEnd)

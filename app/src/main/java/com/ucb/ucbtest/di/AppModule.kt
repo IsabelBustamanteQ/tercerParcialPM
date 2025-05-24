@@ -14,6 +14,7 @@ import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 import com.ucb.framework.plan.PlanRemoteDataSource
 import com.ucb.framework.push.FirebaseNotificationDataSource
+import com.ucb.usecases.plan.GetNumber
 import com.ucb.usecases.plan.GetPlans
 
 @Module
@@ -44,6 +45,11 @@ object AppModule {
     @Singleton
     fun provideGetPlans(planRepository: PlanRepository, @ApplicationContext context: Context): GetPlans {
         return GetPlans(planRepository)
+    }
+    @Provides
+    @Singleton
+    fun provideGetNumber(planRepository: PlanRepository, @ApplicationContext context: Context): GetNumber {
+        return GetNumber(planRepository)
     }
     @Provides
     @Singleton

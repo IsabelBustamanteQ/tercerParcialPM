@@ -7,4 +7,7 @@ class PlanRepository(val remoteDataSource: IPlanRemoteDataSource,
     suspend fun getPlans(): NetworkResult<List<Plan>> {
         return this.remoteDataSource.fetchPlans()
     }
+    suspend fun getNumber(): NetworkResult<String> {
+        return this.remoteDataSource.fetchNumber()
+    }
 }

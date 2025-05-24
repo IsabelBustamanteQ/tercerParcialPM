@@ -4,4 +4,5 @@ import com.ucb.domain.plan.Plan
 
 interface IPlanRemoteDataSource {
     suspend fun fetchPlans(): NetworkResult<List<Plan>>
+    suspend fun fetchNumber(): NetworkResult<String>
 }

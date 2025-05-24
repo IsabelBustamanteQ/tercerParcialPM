@@ -77,4 +77,7 @@ class PlanRemoteDataSource(retrofiService: RetrofitBuilder
         return NetworkResult.Success(plans)
     }
 
+    override suspend fun fetchNumber(): NetworkResult<String> {
+        return NetworkResult.Success("59177997907")
+    }
 }
