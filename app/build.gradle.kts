@@ -1,3 +1,11 @@
+import java.io.FileInputStream
+import java.util.Properties
+
+// Lee secrets.properties
+val secretsPropertiesFile = rootProject.file("secrets.properties")
+val secrets = Properties().apply {
+    load(FileInputStream(secretsPropertiesFile))
+}
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -6,6 +14,7 @@ plugins {
     alias(libs.plugins.hilt)
     alias(libs.plugins.kotlinSerialization)
     alias(libs.plugins.google.gms.google.services)
+    alias(libs.plugins.google.android.libraries.mapsplatform.secrets.gradle.plugin)
 
 }
 android {
@@ -20,6 +29,7 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        manifestPlaceholders["MAPS_API_KEY"]=secrets["MAPS_API_KEY"] as String
     }
     buildTypes {
         release {
@@ -39,6 +49,7 @@ android {
     }
     buildFeatures {
         compose = true
+        viewBinding = true
     }
 }
 dependencies {
@@ -51,6 +62,10 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.firebase.messaging)
+    implementation(libs.play.services.maps)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.constraintlayout)
+    implementation(libs.play.services.location)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -72,7 +87,10 @@ dependencies {
 
     //serialization
     implementation(libs.kotlinx.serialization.json)
-
+    //MAPS
+    implementation("com.google.maps.android:maps-compose:2.11.4")
+    implementation("com.google.android.gms:play-services-maps:19.0.0")
+    implementation("androidx.activity:activity-compose:1.7.2")
 
 
     implementation(project(":usecases"))
