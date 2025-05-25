@@ -1,23 +1,26 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources><string name="app_name">Book Finder</string>
-    <string name="login_title">Log In</string>
-    <string name="home_welcome_text">Welcome back %s!</string>
-    <string name="gitalias_input">Enter the GitHub account</string>
-    <string name="gitalias_btn_find">Search</string>
-    <string name="internet_conection_error">No Internet connection</string>
-    <string name="btn_take_photo">Take Photo</string>
-    <string name="movie_list">Movie List</string>
-    <string name="token">fa3e844ce31744388e07fa47c7c5d8c3</string>
-    <string name="books_title">Book Finder</string>
-    <string name="loading_favorite_books">Loading Favorite Books</string>
-    <string name="favorite_books">Favorite Books</string>
-    <string name="book_name_input">Enter the book name</string>
-    <string name="no_book_yet">No search has been made yet</string>
-    <string name="book_results">Results:</string>
-    <string name="author_label">Author(s):</string>
-    <string name="publish_year_label">Year of Publication:</string>
-    <string name="adding_book">Added to Favorites</string>
-    <string name="like">Like</string>
-    <string name="goBack">Go Back</string>
-    <string name="init_favorite_books">Initializing Saved Books List</string>
+<resources>
+    <string name="app_name">UCB Mobile Plans</string>
+
+    <string name="title_activity_maps">MapsActivity</string>
+    <string name="Title">Our mobile plans</string>
+    <string name="Description">The best coverage, amazing benefits, and a commitment to the planet.</string>
+    <string name="beforeLbl">"Before "</string>
+    <string name="monthLbl">" /month"</string>
+    <string name="nowLbl">"Now "</string>
+    <string name="planBtn">I want this plan</string>
+    <string name="WhatsAppMessage">Hi, UCB mobile, I need your help</string>
+    <string name="WhatsAppError">Could not open WhatsApp</string>
+    <string name="mapsPermissionMsg">Location permission required to show your current location</string>
+    <string name="SimLbl">Delivery location</string>
+    <string name="Simtitle">Where should we send your SIM?</string>
+    <string name="phoneLbl">Reference phone number</string>
+    <string name="LatitudeLbl">Latitude</string>
+    <string name="LongitudeLbl">Longitude</string>
+    <string name="mapsLbl">Select a point on the map</string>
+    <string name="markerLbl">Selected location</string>
+    <string name="SimError">Please complete all fields and select a location.</string>
+    <string name="sendBtn">Send</string>
+    <string name="thanks">Thank you</string>
+    <string name="ThanksMsg">Thank you for choosing our Mobile Plan. We will send the SIM card to the indicated location.</string>
+    <string name="accept">Accept</string>
 </resources>

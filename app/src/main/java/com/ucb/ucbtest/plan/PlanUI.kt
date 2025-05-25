@@ -12,15 +12,19 @@ import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.with
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -52,6 +56,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -60,6 +65,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.google.android.gms.common.internal.StringResourceValueReader
+import com.ucb.ucbtest.R
 import com.ucb.ucbtest.socialpack.Facebook
 import com.ucb.ucbtest.socialpack.Instagram
 import com.ucb.ucbtest.socialpack.Messenger
@@ -86,6 +93,9 @@ fun PlanUI(
     val uiState by planViewModel.flow.collectAsState()
     var currentIndex by remember { mutableStateOf(0) }
 
+
+    val message = stringResource(id = R.string.WhatsAppMessage)
+    val error= stringResource(R.string.WhatsAppError)
     when (val ui = uiState) {
         is PlanViewModel.PlanState.Init -> {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -106,20 +116,19 @@ fun PlanUI(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = "Nuestros planes móviles",
+                        text = stringResource(R.string.Title),
                         fontSize = 28.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color(0xFFF36C5D)
                     )
 
                     Text(
-                        text = "La mejor cobertura, increíbles beneficios y un compromiso con el planeta.",
+                        text = stringResource(R.string.Description),
                         fontSize = 20.sp,
                         textAlign = TextAlign.Center,
                         modifier = Modifier.padding(vertical = 8.dp)
                     )
 
-                    // AnimatedContent para la animación de transición del plan
                     AnimatedContent(
                         targetState = currentIndex,
                         transitionSpec = {
@@ -154,7 +163,7 @@ fun PlanUI(
                                 Row(
                                     verticalAlignment = Alignment.Bottom
                                 ) {
-                                    Text("Antes ", fontSize = 20.sp, color = Color.Gray)
+                                    Text(stringResource(R.string.beforeLbl), fontSize = 20.sp, color = Color.Gray)
                                     Text(
                                         text = "${plan.precioAntes}",
                                         fontSize = 24.sp,
@@ -164,20 +173,20 @@ fun PlanUI(
                                         ),
                                         fontWeight = FontWeight.Bold
                                     )
-                                    Text(" /mes", fontSize = 20.sp, color = Color.Gray)
+                                    Text(stringResource(R.string.monthLbl), fontSize = 20.sp, color = Color.Gray)
                                 }
 
                                 Row(
                                     verticalAlignment = Alignment.Bottom
                                 ) {
-                                    Text("Ahora ", fontSize = 20.sp, color = Color.Gray)
+                                    Text(stringResource(R.string.nowLbl), fontSize = 20.sp, color = Color.Gray)
                                     Text(
                                         text = "${plan.precioAhora}",
                                         fontSize = 36.sp,
                                         color = Color.Black,
                                         fontWeight = FontWeight.ExtraBold
                                     )
-                                    Text(" /mes", fontSize = 20.sp, color = Color.Gray)
+                                    Text(stringResource(R.string.monthLbl), fontSize = 20.sp, color = Color.Gray)
                                 }
 
                                 Text(
@@ -217,14 +226,13 @@ fun PlanUI(
                                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFF36C5D)),
                                     shape = RoundedCornerShape(50)
                                 ) {
-                                    Text(text = "Quiero este plan", color = Color.White)
+                                    Text(text = stringResource(R.string.planBtn), color = Color.White)
                                 }
                             }
                         }
                     }
                 }
 
-                // Flechas
                 IconButton(
                     onClick = {
                         currentIndex = if (currentIndex == 0) plans.lastIndex else currentIndex - 1
@@ -248,8 +256,6 @@ fun PlanUI(
                 ) {
                     Icon(Icons.Default.KeyboardArrowRight, contentDescription = "Siguiente", tint = Color.White)
                 }
-
-                // Redes sociales
                 Row(
                     horizontalArrangement = Arrangement.SpaceEvenly,
                     modifier = Modifier
@@ -269,7 +275,11 @@ fun PlanUI(
                         Box(
                             modifier = Modifier
                                 .size(40.dp)
-                                .background(Color.Black, shape = CircleShape),
+                                .background(Color.Black, shape = CircleShape)
+                                .clickable {
+                                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://cba.ucb.edu.bo/contacto/"))
+                                    context.startActivity(intent)
+                                },
                             contentAlignment = Alignment.Center
                         ) {
                             Icon(
@@ -281,11 +291,8 @@ fun PlanUI(
                         }
                     }
                 }
-
-                // Botón flotante WhatsApp
                 FloatingActionButton(
                     onClick = {
-                        val message = "Hola, UCB mobile, preciso su ayuda"
                         val numberWithCountryCode = number
                         try {
                             val intent = Intent(Intent.ACTION_VIEW).apply {
@@ -294,13 +301,17 @@ fun PlanUI(
                             }
                             context.startActivity(intent)
                         } catch (e: Exception) {
-                            Toast.makeText(context, "No se pudo abrir WhatsApp", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
                         }
                     },
                     containerColor = Color(0xFF25D366),
                     modifier = Modifier
                         .align(Alignment.BottomEnd)
-                        .padding(16.dp),
+                        .padding(
+                            WindowInsets.navigationBars
+                                .asPaddingValues()
+                        )
+                        .padding(bottom = 45.dp, end = 16.dp),
                     shape = CircleShape
                 ) {
                     Icon(

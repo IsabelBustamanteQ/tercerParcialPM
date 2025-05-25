@@ -6,19 +6,25 @@ import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.*
+import com.ucb.ucbtest.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -37,7 +43,8 @@ fun SimUI(onBackPressed: () -> Unit) {
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(initialPosition, 14f)
     }
-
+    val error=stringResource(R.string.SimError)
+    val mapsPermissionMsg=stringResource(R.string.mapsPermissionMsg)
     // Solicitud de permisos
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
@@ -54,7 +61,7 @@ fun SimUI(onBackPressed: () -> Unit) {
                 }
             }
         } else {
-            Toast.makeText(context, "Permiso de ubicación requerido para mostrar tu ubicación actual", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, mapsPermissionMsg, Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -82,7 +89,7 @@ fun SimUI(onBackPressed: () -> Unit) {
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text("Ubicación de entrega") },
+                title = { Text(stringResource(R.string.SimLbl)) },
                 navigationIcon = {
                     IconButton(onClick = { onBackPressed() }) {
                         Icon(
@@ -103,24 +110,29 @@ fun SimUI(onBackPressed: () -> Unit) {
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
-                text = "¿Dónde enviaremos tu SIM?",
-                style = MaterialTheme.typography.titleLarge,
-                modifier = Modifier.padding(bottom = 16.dp)
+                text = stringResource(R.string.Simtitle),
+                fontSize = 28.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color(0xFFF36C5D)
             )
 
             OutlinedTextField(
                 value = phone,
-                onValueChange = { phone = it },
-                label = { Text("Teléfono de referencia") },
-                modifier = Modifier.fillMaxWidth()
+                onValueChange = {
+                    phone = it.take(20)  // Limita a 20 caracteres
+                },
+                label = { Text(stringResource(R.string.phoneLbl)) },
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true
             )
+
 
             Spacer(modifier = Modifier.height(16.dp))
 
             OutlinedTextField(
                 value = latitude,
                 onValueChange = {},
-                label = { Text("Latitud") },
+                label = { Text(stringResource(R.string.LatitudeLbl)) },
                 modifier = Modifier.fillMaxWidth(),
                 enabled = false
             )
@@ -128,14 +140,14 @@ fun SimUI(onBackPressed: () -> Unit) {
             OutlinedTextField(
                 value = longitude,
                 onValueChange = {},
-                label = { Text("Longitud") },
+                label = { Text(stringResource(R.string.LongitudeLbl)) },
                 modifier = Modifier.fillMaxWidth(),
                 enabled = false
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            Text("Selecciona un punto en el mapa", style = MaterialTheme.typography.labelLarge)
+            Text(stringResource(R.string.mapsLbl), style = MaterialTheme.typography.labelLarge)
 
             Spacer(modifier = Modifier.height(8.dp))
 
@@ -159,7 +171,7 @@ fun SimUI(onBackPressed: () -> Unit) {
                 markerPosition?.let {
                     Marker(
                         state = MarkerState(position = it),
-                        title = "Ubicación seleccionada"
+                        title = stringResource(R.string.markerLbl)
                     )
                 }
             }
@@ -173,25 +185,27 @@ fun SimUI(onBackPressed: () -> Unit) {
                     } else {
                         Toast.makeText(
                             context,
-                            "Por favor, completa todos los campos y selecciona una ubicación.",
+                            error,
                             Toast.LENGTH_SHORT
                         ).show()
                     }
                 },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFF36C5D)),
+                shape = RoundedCornerShape(50)
             ) {
-                Text("Enviar")
+                Text(stringResource(R.string.sendBtn))
             }
             if (showThankYouDialog) {
                 AlertDialog(
                     onDismissRequest = { showThankYouDialog = false },
-                    title = { Text("Gracias") },
-                    text = { Text("Gracias por contratar nuestro Plan Móvil, enviaremos la tarjeta SIM a la ubicación indicada") },
+                    title = { Text(stringResource(R.string.thanks)) },
+                    text = { Text(stringResource(R.string.ThanksMsg)) },
                     confirmButton = {
                         TextButton(
                             onClick = { showThankYouDialog = false }
                         ) {
-                            Text("Aceptar")
+                            Text(stringResource(R.string.accept))
                         }
                     }
                 )
